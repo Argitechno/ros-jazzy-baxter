@@ -1,0 +1,47 @@
+FROM baxter-ros2-jazzy
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=C.UTF-8
+ENV LANGUAGE=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
+#Network tools and sudo + locales
+RUN apt update \
+    && apt-get install -y \
+        net-tools \
+        iproute2 \
+        iputils-ping \
+        sudo \
+        locales \
+    && locale-gen en_US.UTF-8
+
+#Keyboard Config for terminator
+RUN apt update \
+    && apt install -y --no-install-recommends \
+        keyboard-configuration \
+    && echo "keyboard-configuration  keyboard-configuration/layoutcode  string  us" | debconf-set-selections
+
+#Development/Testing tools
+RUN apt update \
+    && apt install -y \
+        terminator \
+        nano
+# Create a non-root user 'baxter' with sudo access
+
+RUN apt install -y \
+        plocate \
+    && updatedb \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m -s /bin/bash baxter && \
+    echo "baxter ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/baxter && \
+    chmod 0440 /etc/sudoers.d/baxter
+
+# Set workdir and switch to non-root user
+WORKDIR /home/baxter
+USER baxter
+
+COPY entrypoint_dev.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["terminator", "-u"]
