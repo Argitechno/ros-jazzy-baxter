@@ -1,6 +1,0 @@
-devel_space: /home/baxter/baxter_ws/devel
-install: false
-install_space: /home/baxter/baxter_ws/install
-profile: default
-source_space: /home/baxter/baxter_ws/src
-workspace: /home/baxter/baxter_ws
