@@ -157,12 +157,8 @@ in \${ros_setup}.\n"
     elif [ -s "install/setup.bash" ]; then
         WORKSPACE_SETUP="install/setup.bash"
     else
-        echo -ne "EXITING - \n1) Please verify that this script is being run \
-in the root of your workspace.\n2) Please verify that your workspace has been built:\n\
-   - For catkin: (source /opt/ros/\${ros_version}/setup.sh; catkin_make)\n\
-   - For colcon: (source /opt/ros/\${ros_version}/setup.sh; colcon build)\n\
-3) Run this script again upon completion of your workspace build.\n"
-        exit 1
+        echo "WARNING: No setup file found to source (no packages built yet)."
+        WORKSPACE_SETUP=""
     fi
 
     [ -n "${your_ip}" ] && export ROS_IP="${your_ip}"
@@ -170,8 +166,10 @@ in the root of your workspace.\n2) Please verify that your workspace has been bu
     [ -n "${baxter_hostname}" ] && \
         export ROS_MASTER_URI="http://${baxter_hostname}:11311"
 
-    # source the workspace setup bash script (catkin or colcon)
-    source "${WORKSPACE_SETUP}"
+    # source the workspace setup bash script (catkin or colcon) if it exists
+    if [ -n "${WORKSPACE_SETUP}" ] && [ -f "${WORKSPACE_SETUP}" ]; then
+        source "${WORKSPACE_SETUP}"
+    fi
 
     # setup the bash prompt
     export __ROS_PROMPT=\${__ROS_PROMPT:-0}
@@ -197,7 +195,7 @@ in the root of your workspace.\n2) Please verify that your workspace has been bu
 
 EOF
 
-export LD_LIBRARY_PATH=/opt/ros/jazzy/lib:/opt/ros/obese/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=/opt/ros/jazzy/lib:/opt/ros/obese/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY}
 
 ${SHELL} --rcfile ${tf}
 
