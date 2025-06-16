@@ -147,7 +147,7 @@ ENV PYTHONPATH=/opt/ros/obese/lib/python3/dist-packages
 COPY updated/joint_trajectory_action.py /opt/ros/obese/lib/python3/dist-packages/joint_trajectory_action/joint_trajectory_action.py
 
 # Overwrite the installed launch file with your updated version
-COPY updated/baxter_bridge_launch.py /opt/ros/jazzy/share/baxter_bridge/launch/baxter_bridge_launch.py
+#COPY updated/baxter_bridge_launch.py /opt/ros/jazzy/share/baxter_bridge/launch/baxter_bridge_launch.py
 
 #Symlink python3 to python
 RUN ln -sf /usr/bin/python3 /usr/bin/python
